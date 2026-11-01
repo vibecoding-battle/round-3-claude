@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>HOULE — le synthétiseur qu'on remue</title>
+  <meta name="description" content="HOULE est un synthétiseur imaginaire : son clavier est un bain de marbrure. Déposez l'encre, peignez-la, écoutez-la. Simulation de fluide et synthèse sonore calculées en direct.">
+  <meta name="theme-color" content="#0d1440">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1440'/%3E%3Ccircle cx='32' cy='32' r='24' fill='%23eea628'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23c0352b'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23efe5cf'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%233d63d6'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&family=Martian+Mono:wdth,wght@75..112.5,300..600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <!--
+    HOULE — round 3 du Vibecoding Battle.
+    Direction : un bac d'ebru (marbrure turque) qui est aussi un instrument.
+    Bain indigo profond, encres pigmentaires (lapis, garance, safran, malachite, craie),
+    papier de tirage pour les sections de lecture. Anybody (axe de largeur animé) pour la voix,
+    Hanken Grotesk pour le texte, Martian Mono pour les mesures.
+  -->
+  <canvas id="bath" aria-hidden="true"></canvas>
+
+  <div class="stylus" id="stylus" aria-hidden="true">
+    <span class="stylus-ring"></span>
+    <span class="stylus-tag">Cliquez pour déposer</span>
+  </div>
+
+  <header class="nav">
+    <a class="brand" href="#bac" aria-label="HOULE, retour au bac">
+      <span class="brand-word" id="brand-word">HOULE</span>
+      <span class="brand-tag">synthétiseur à encre · objet fictif</span>
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#gestes">Gestes</a>
+      <a href="#motifs">Motifs</a>
+      <a href="#encres">Encres</a>
+      <a href="#fiche">Fiche</a>
+      <a href="#epreuves" id="nav-prints">Épreuves<span class="count" id="print-count">0</span></a>
+    </nav>
+    <button class="sound" id="sound" type="button" aria-pressed="false">
+      <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="sound-label">Son coupé</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- I. Le bac -->
+    <section id="bac" class="hero" data-bath aria-labelledby="titre">
+      <h1 id="titre" class="hero-title">HOULE</h1>
+      <div class="hero-lede">
+        <p class="kicker"><span class="kicker-dot"></span>Instrument fictif n°03</p>
+        <p class="lede">Le synthétiseur qu'on <em class="swell">remue</em>.</p>
+      </div>
+      <div class="hero-bottom">
+        <div class="hero-copy">
+          <p class="sub">Déposez une goutte d'encre&nbsp;: elle chante. Tirez-la au stylet&nbsp;: elle tient la note. Le bain et le son sont calculés en direct, ici, dans votre navigateur.</p>
+          <p class="sub touch-only">Touchez le bain pour déposer, glissez de côté pour peigner.</p>
+          <div class="hero-actions">
+            <button class="btn btn-bone" id="play" type="button">
+              <span class="btn-drop" aria-hidden="true"></span>Jouer avec le son
+            </button>
+            <a class="btn btn-line" href="#gestes">Comment ça marche</a>
+          </div>
+        </div>
+        <dl class="hud" aria-hidden="true">
+          <div><dt>Note</dt><dd id="hud-note">—</dd></div>
+          <div><dt>Voix</dt><dd id="hud-voices">0</dd></div>
+          <div><dt>Motif</dt><dd id="hud-pattern">Battal</dd></div>
+          <div><dt>Houle</dt><dd><span class="meter"><i id="hud-energy"></i></span></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- II. Les gestes -->
+    <section id="gestes" class="paper" aria-labelledby="gestes-titre">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="eyebrow">I — Le geste</p>
+          <h2 id="gestes-titre">Trois gestes,<br>aucun bouton.</h2>
+          <p class="intro">Au bac, l'<em>ebrucu</em> — le marbreur turc — dépose ses couleurs sur une eau épaissie, où quelques gouttes de fiel de bœuf les font s'étaler. Puis il les tire au stylet et au peigne. HOULE écoute exactement ces gestes, et les change en son.</p>
+        </header>
+
+        <ol class="gestures">
+          <li class="gesture reveal">
+            <span class="num">01</span>
+            <svg class="glyph glyph-drop" viewBox="0 0 160 160" aria-hidden="true">
+              <circle cx="80" cy="80" r="70" class="g-ring"/>
+              <circle cx="80" cy="80" r="56" class="g-ring g-fill-safran"/>
+              <circle cx="80" cy="80" r="42" class="g-ring g-fill-lapis"/>
+              <circle cx="80" cy="80" r="28" class="g-ring g-fill-bone"/>
+              <circle cx="80" cy="80" r="14" class="g-ring g-fill-garance"/>
+            </svg>
+            <div class="g-text">
+              <h3>Goutte</h3>
+              <p>Un clic dépose une goutte qui repousse les précédentes en anneaux, sans jamais les mélanger. Elle joue une note&nbsp;: la position horizontale choisit la hauteur, dans la gamme du motif en cours.</p>
+            </div>
+            <dl class="map">
+              <div><dt>Geste</dt><dd>Clic, ou touches <kbd class="kbd-first">Q</kbd>…<kbd class="kbd-last">M</kbd></dd></div>
+              <div><dt>Son</dt><dd>La voix de l'encre choisie</dd></div>
+            </dl>
+          </li>
+          <li class="gesture reveal">
+            <span class="num">02</span>
+            <svg class="glyph glyph-comb" viewBox="0 0 160 160" aria-hidden="true">
+              <path class="g-wave" d="M6 112 C 26 92, 38 132, 58 112 S 90 92, 110 112 S 142 132, 154 112"/>
+              <path class="g-wave g-wave-2" d="M6 132 C 26 112, 38 152, 58 132 S 90 112, 110 132 S 142 152, 154 132"/>
+              <rect x="22" y="18" width="116" height="16" rx="4" class="g-solid"/>
+              <path class="g-tines" d="M34 34 V96 M54 34 V96 M74 34 V96 M94 34 V96 M114 34 V96 M126 34 V96"/>
+            </svg>
+            <div class="g-text">
+              <h3>Peigne</h3>
+              <p>Cliquez-glissez dans le bain&nbsp;: l'encre suit le stylet, et une nappe se lève, accordée sur la gamme. Plus le geste est vif, plus le filtre s'ouvre&nbsp;; ralentissez, elle s'assombrit.</p>
+            </div>
+            <dl class="map">
+              <div><dt>Geste</dt><dd>Cliquer-glisser</dd></div>
+              <div><dt>Son</dt><dd>Nappe filtrée, en glissando</dd></div>
+            </dl>
+          </li>
+          <li class="gesture reveal">
+            <span class="num">03</span>
+            <svg class="glyph glyph-swell" viewBox="0 0 160 160" aria-hidden="true">
+              <path class="g-wave g-s1" d="M-40 54 Q -20 34 0 54 T 40 54 T 80 54 T 120 54 T 160 54 T 200 54"/>
+              <path class="g-wave g-s2" d="M-40 84 Q -20 64 0 84 T 40 84 T 80 84 T 120 84 T 160 84 T 200 84"/>
+              <path class="g-wave g-s3" d="M-40 114 Q -20 94 0 114 T 40 114 T 80 114 T 120 114 T 160 114 T 200 114"/>
+            </svg>
+            <div class="g-text">
+              <h3>Houle</h3>
+              <p>Faites défiler la page&nbsp;: le bain tangue sous l'écran. Un bourdon grave enfle avec l'énergie du courant, puis retombe quand l'eau se calme.</p>
+            </div>
+            <dl class="map">
+              <div><dt>Geste</dt><dd>Défilement</dd></div>
+              <div><dt>Son</dt><dd>Bourdon tonique et quinte</dd></div>
+            </dl>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- III. Les motifs : une fenêtre sur le bain -->
+    <section id="motifs" class="window" data-bath aria-labelledby="motifs-titre">
+      <div class="panel reveal">
+        <p class="eyebrow eyebrow-bone">II — Le motif</p>
+        <h2 id="motifs-titre">Cinq motifs,<br>cinq gammes.</h2>
+        <p class="intro">Les noms viennent de l'ebru. Choisissez-en un&nbsp;: HOULE le trace dans le bain, sous vos yeux, et accorde l'instrument.</p>
+        <ul class="patterns">
+          <li><button type="button" data-pattern="battal" aria-pressed="true"><span class="p-name">Battal</span><span class="p-fr">« la pierre » — une pluie de gouttes</span><span class="p-scale">ré dorien</span></button></li>
+          <li><button type="button" data-pattern="gelgit" aria-pressed="false"><span class="p-name">Gelgit</span><span class="p-fr">« va-et-vient » — le peigne aller, retour</span><span class="p-scale">la mineur penta.</span></button></li>
+          <li><button type="button" data-pattern="tarakli" aria-pressed="false"><span class="p-name">Taraklı</span><span class="p-fr">« peigné » — des dents fines et serrées</span><span class="p-scale">do lydien</span></button></li>
+          <li><button type="button" data-pattern="bulbul" aria-pressed="false"><span class="p-name">Bülbül yuvası</span><span class="p-fr">« nid de rossignol » — spirales enroulées</span><span class="p-scale">hicaz sur ré</span></button></li>
+          <li><button type="button" data-pattern="sal" aria-pressed="false"><span class="p-name">Şal</span><span class="p-fr">« châle » — houle, puis peigne fin</span><span class="p-scale">sol penta.</span></button></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- IV. Les encres -->
+    <section id="encres" class="inks-sec" aria-labelledby="encres-titre">
+      <header class="sec-head wrap reveal">
+        <p class="eyebrow eyebrow-bone">III — L'encre</p>
+        <h2 id="encres-titre">Cinq encres,<br>cinq voix.</h2>
+      </header>
+      <div class="bands">
+        <article class="band" data-ink="0" style="--c:#3d63d6; --fg:#efe5cf">
+          <h3>Lapis</h3>
+          <div class="band-body">
+            <p class="pig">Bleu outremer, broyé du lapis-lazuli.</p>
+            <p class="voice"><b>Nappe.</b> Deux sinus à peine désaccordés, attaque lente, longue traîne.</p>
+            <div class="band-actions">
+              <button type="button" class="chip" data-listen="0">Écouter</button>
+              <button type="button" class="chip chip-solid" data-choose="0">Prendre cette encre</button>
+            </div>
+          </div>
+        </article>
+        <article class="band" data-ink="1" style="--c:#c0352b; --fg:#efe5cf">
+          <h3>Garance</h3>
+          <div class="band-body">
+            <p class="pig">Rouge tiré de la racine de garance.</p>
+            <p class="voice"><b>Cloche.</b> Synthèse FM à deux opérateurs, rapport 3,5&nbsp;: un métal qui s'éteint.</p>
+            <div class="band-actions">
+              <button type="button" class="chip" data-listen="1">Écouter</button>
+              <button type="button" class="chip chip-solid" data-choose="1">Prendre cette encre</button>
+            </div>
+          </div>
+        </article>
+        <article class="band" data-ink="2" style="--c:#eea628; --fg:#0b1033">
+          <h3>Safran</h3>
+          <div class="band-body">
+            <p class="pig">Jaune des pistils de safran.</p>
+            <p class="voice"><b>Corde.</b> Deux dents de scie dans un filtre qui se referme&nbsp;: pincé, sec, net.</p>
+            <div class="band-actions">
+              <button type="button" class="chip" data-listen="2">Écouter</button>
+              <button type="button" class="chip chip-solid" data-choose="2">Prendre cette encre</button>
+            </div>
+          </div>
+        </article>
+        <article class="band" data-ink="3" style="--c:#1f8a68; --fg:#efe5cf">
+          <h3>Malachite</h3>
+          <div class="band-body">
+            <p class="pig">Vert de cuivre, broyé de la pierre.</p>
+            <p class="voice"><b>Basse.</b> Sinus et triangle une octave plus bas, avec un petit claquement d'attaque.</p>
+            <div class="band-actions">
+              <button type="button" class="chip" data-listen="3">Écouter</button>
+              <button type="button" class="chip chip-solid" data-choose="3">Prendre cette encre</button>
+            </div>
+          </div>
+        </article>
+        <article class="band" data-ink="4" style="--c:#efe5cf; --fg:#0b1033">
+          <h3>Craie</h3>
+          <div class="band-body">
+            <p class="pig">Blanc de craie, le plus couvrant.</p>
+            <p class="voice"><b>Souffle.</b> Un bruit blanc filtré au plus serré, accordé sur la note&nbsp;: une flûte de roseau.</p>
+            <div class="band-actions">
+              <button type="button" class="chip" data-listen="4">Écouter</button>
+              <button type="button" class="chip chip-solid" data-choose="4">Prendre cette encre</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- V. La fiche -->
+    <section id="fiche" class="fiche" aria-labelledby="fiche-titre">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="eyebrow eyebrow-bone">IV — La fiche</p>
+          <h2 id="fiche-titre">Fiche technique<br><span class="h2-soft">de cette page, mesurée en direct.</span></h2>
+        </header>
+        <dl class="specs reveal">
+          <div><dt>Simulation</dt><dd>Navier–Stokes incompressible, 2D</dd></div>
+          <div><dt>Pression</dt><dd><span data-spec="iters">22</span> itérations de Jacobi par image</dd></div>
+          <div><dt>Grille des courants</dt><dd><span data-spec="sim">—</span> cellules</dd></div>
+          <div><dt>Encre</dt><dd><span data-spec="dye">—</span> texels, demi-flottants</dd></div>
+          <div><dt>Cadence</dt><dd><span data-spec="fps">—</span> images par seconde</dd></div>
+          <div><dt>Marbrure</dt><dd>Transformations exactes&nbsp;: goutte, peigne, spirale, vague</dd></div>
+          <div><dt>Moteur audio</dt><dd><span data-spec="audio">en attente du premier geste</span></dd></div>
+          <div><dt>Voix</dt><dd><span data-spec="voices">0</span> actives sur 20</dd></div>
+          <div><dt>Réverbération</dt><dd>Convolution, réponse impulsionnelle générée (3,2&nbsp;s)</dd></div>
+          <div><dt>Gouttes déposées</dt><dd><span data-spec="drops">0</span> depuis l'ouverture</dd></div>
+          <div><dt>Dépendances</dt><dd>Aucune bibliothèque. Tout est écrit à la main.</dd></div>
+          <div><dt>Prix</dt><dd>Aucun. HOULE n'est pas à vendre&nbsp;: il n'existe pas.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- VI. Les épreuves -->
+    <section id="epreuves" class="paper" aria-labelledby="epreuves-titre">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="eyebrow">V — L'épreuve</p>
+          <h2 id="epreuves-titre">Vos épreuves.</h2>
+          <p class="intro">Au bac, on pose une feuille sur l'encre puis on la retire d'un seul geste&nbsp;: le motif s'y imprime, en miroir, et il ne se refera jamais. Ici aussi.</p>
+        </header>
+        <div class="prints" id="prints">
+          <div class="print-empty" id="print-empty">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="6" width="44" height="52" rx="3"/><path d="M18 22c6-6 10 6 16 0s10 6 12 0M18 34c6-6 10 6 16 0s10 6 12 0M18 46c6-6 10 6 16 0"/></svg>
+            <p>Aucune épreuve pour l'instant.</p>
+            <button type="button" class="btn btn-ink" data-act="print">Tirer ma première épreuve</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VII. Fin -->
+    <section class="fin" aria-labelledby="fin-titre">
+      <p class="eyebrow eyebrow-bone">VI — Fin</p>
+      <h2 id="fin-titre" class="fin-title">HOULE<br>n'existe pas.</h2>
+      <p class="fin-sub">Vous venez pourtant d'en jouer.</p>
+      <a class="btn btn-bone" href="#bac"><span class="btn-drop" aria-hidden="true"></span>Retourner au bac</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>HOULE est un objet imaginaire, conçu et codé par Claude (Anthropic) pour le Vibecoding Battle — round 3. Aucun prix, aucune précommande, aucun fabricant.</p>
+    <p>Les noms de motifs viennent de l'ebru, l'art turc de la marbrure sur eau, inscrit au patrimoine culturel immatériel de l'UNESCO.</p>
+  </footer>
+
+  <div class="dock" id="dock" role="toolbar" aria-label="Instrument">
+    <div class="pots" role="radiogroup" aria-label="Encre">
+      <button type="button" class="pot" role="radio" aria-checked="true" data-ink="0" style="--c:#3d63d6" title="Lapis — nappe (1)"><span class="sr-only">Lapis</span></button>
+      <button type="button" class="pot" role="radio" aria-checked="false" data-ink="1" style="--c:#c0352b" title="Garance — cloche (2)"><span class="sr-only">Garance</span></button>
+      <button type="button" class="pot" role="radio" aria-checked="false" data-ink="2" style="--c:#eea628" title="Safran — corde (3)"><span class="sr-only">Safran</span></button>
+      <button type="button" class="pot" role="radio" aria-checked="false" data-ink="3" style="--c:#1f8a68" title="Malachite — basse (4)"><span class="sr-only">Malachite</span></button>
+      <button type="button" class="pot" role="radio" aria-checked="false" data-ink="4" style="--c:#efe5cf" title="Craie — souffle (5)"><span class="sr-only">Craie</span></button>
+    </div>
+    <p class="dock-ink" id="dock-ink">Lapis<small>nappe</small></p>
+    <span class="dock-sep" aria-hidden="true"></span>
+    <button type="button" class="dock-btn dock-primary" data-act="print" aria-label="Tirer une épreuve">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 9c2-2 3 2 5 0s3 2 3 0M8 14c2-2 3 2 5 0s3 2 3 0"/></svg>
+      <span>Tirer une épreuve</span>
+    </button>
+    <button type="button" class="dock-btn" data-act="clear" aria-label="Vider le bac">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg>
+      <span>Vider le bac</span>
+    </button>
+  </div>
+
+  <div class="sheet-fx" id="sheet-fx" aria-hidden="true">
+    <div class="sheet" id="sheet"><div class="sheet-ink" id="sheet-ink"></div></div>
+  </div>
+
+  <p class="sr-only" aria-live="polite" id="announce"></p>
+</body>
+</html>
